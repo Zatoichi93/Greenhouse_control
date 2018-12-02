@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+
+{% block additional_css %}
+{% end %}
+
+{% block main %}
+
+<div class="row">
+    <div class="card">
+        <div class="card-body">
+            <form class="form-horizontal" id="search-form">
+                <div class="form-group row">
+                    <div class="col-md">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">da:</span>
+                            </div>
+                            <input class="form-control" id="fromDate" name="fromDate" id="fromDate">
+                            <div class="input-group-append">
+                                <span class="input-group-text">
+                                    <i class="far fa-calendar-alt"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">a:</span>
+                            </div>
+                            <input class="form-control" name="toDate" id="toDate">
+                            <div class="input-group-append">
+                                <span class="input-group-text">
+                                    <i class="far fa-calendar-alt"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div><!-- form row -->
+                <div class="form-group row">
+                    <div class="col">
+                        <div class="input-group" id="timespan">
+                            <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                                <label class="btn btn-secondary active">
+                                    <input type="radio" name="timespan" autocomplete="off" value="1" checked> Daily
+                                </label>
+                                <label class="btn btn-secondary">
+                                    <input type="radio" name="timespan" autocomplete="off" value="7"> Weekly
+                                </label>
+                                <label class="btn btn-secondary">
+                                    <input type="radio" name="timespan" autocomplete="off" value="30"> Monthly
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-action row">
+                    <div class="col float-right">
+                        <button type="submit" class="btn btn-primary" id="search-button">
+                            Ricerca <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div><!-- card body -->
+    </div><!-- card -->
+</div><!-- row -->
+<div class="row" id="report-result" hidden>
+    <div class="card">
+        <div class="card-header">
+
+        </div>
+        <div class="card-body">
+
+        </div>
+    </div>
+</div>
+{% end %}
+
+{% block additional_script %}
+<script src="{{ static_url("js/datepicker-it.js") }}" charset="utf-8"></script>
+<script>
+    $.datepicker.setDefaults(
+        $.datepicker.regional["it"]
+    );
+    var from = $("#fromDate").datepicker({
+        defaultDate: -7
+    }).on("change", function () {
+        to.datepicker("option", "minDate", from.datepicker("getDate"))
+    });
+
+    var to = $("#toDate").datepicker({
+        defaultDate: new Date()
+    }).on("change", function () {
+        from.datepicker("option", "maxDate", to.datepicker("getDate"));
+    });
+
+
+    $("#timespan").on("change", function () {
+        console.log($("input[name='options']:checked").val());
+    })
+
+    $("#search-form").submit(function (event) {
+        event.preventDefault();
+        $('#report-result').hide();
+        $('#search-button').prop("disabled", true);
+        var form_data = $(this).serialize();
+        $.ajax({
+            url: "/reports",
+            method: "POST",
+            data: form_data,
+            success: function (data) {
+                $('#search-button').prop("disabled", false);
+                $("#report-result").show();
+            }
+        })
+    })
+</script>
+{% end %}
