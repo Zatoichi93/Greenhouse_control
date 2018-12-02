@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="{{ static_url("css/style.min.css") }}" type="text/css"/>
+    <link rel="stylesheet" href="{{ static_url("css/jquery-ui.min.css") }}" type="text/css"/>
+    <link rel="stylesheet" href="{{ static_url("css/jquery-ui.theme.min.css") }}" type="text/css"/>
+    <link rel="stylesheet" href="{{ static_url("css/jquery-ui.structure.min.css") }}" type="text/css"/>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+    {% block additional_css %}
+    {% end %}
+    <title>{% block title %}{% end %}</title>
+</head>
+
+<body class="app sidebar-show header-fixed">
+<header class="app-header navbar">
+    <a class="navbar-brand" href="/">Greenhouse</a>
+</header>
+
+<div class="app-body">
+    <div class="sidebar">
+        <nav class="sidebar-nav">
+            <ul class="nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="/">
+                        <i class="nav-icon" data-feather="home"></i>
+                        Dashboard <span class="sr-only">(current)</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/charts">
+                        <i class="nav-icon" data-feather="pie-chart"></i>
+                        Grafici
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/settings">
+                        <i class="nav-icon" data-feather="settings"></i>
+                        Settings
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/reports">
+                        <i class="nav-icon" data-feather="file-text"></i>
+                        Reports
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+    <main role="main" class="main">
+        <div class="container-fluid">
+            <div class="animated fadeIn">
+                {% block main %}
+                {% end %}
+            </div>
+        </div>
+    </main>
+</div>
+
+<script src="{{ static_url("js/jquery-3.3.1.js") }}" type="text/javascript"></script>
+<script src="{{ static_url("js/jquery-ui.min.js") }}" type="text/javascript"></script>
+<script src="{{ static_url("js/popper.min.js") }}" type="text/javascript"></script>
+<script src="{{ static_url("js/bootstrap.min.js") }}" type="text/javascript"></script>
+<script src="{{ static_url("js/feather.min.js") }}" type="text/javascript"></script>
+<script src="{{ static_url("js/coreui.min.js") }}" type="text/javascript"></script>
+{% block additional_script %}
+{% end %}
+<script>feather.replace();</script>
+</body>
+</html>

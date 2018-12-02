@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block additional_css %}
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/taucharts@2/dist/taucharts.min.css">
+{% end %}
+
+{% block title %}Greenhouse{% end %}
+
+{% block main %}
+<div class="card">
+    <div class="card-body">
+        <div class="small text-muted">Temperature</div>
+        <div class="chart-wrapper" id="tempChart" style="height: 200px"></div>
+        <div class="small text-muted">Umidità</div>
+        <div class="chart-wrapper" id="humiChart" style="height: 200px"></div>
+        <div class="small text-muted">Percentuale accensione riscaldamento</div>
+        <div class="chart-wrapper" id="heaterChart" style="height: 100px"></div>
+    </div>
+</div>
+
+{% end %}
+
+{% block additional_script %}
+<script src="{{ static_url("js/d3.min.js") }}" charset="utf-8"></script>
+<script src="{{ static_url("js/taucharts.min.js") }}" type="text/javascript"></script>
+<script src="{{ static_url("js/openseadragon.min.js") }}" type="text/javascript"></script>
+<script>
+    $.ajax({
+        dataType: 'json',
+        type: 'GET',
+        url: '/enviroment',
+        success: function (data) {
+            new Taucharts.Chart({
+                data: data,
+                type: 'stacked-area',
+                x: 'date',
+                y: 'temperature',
+                color: 'light',
+                dimensions: {
+                    date: {type: 'measure', scale: 'time'},
+                    temperature: {type: 'measure'}
+                },
+                guide: {
+                    color: {
+                        brewer: {
+                            false: '#594ff2',
+                            true: '#ffbc24'
+                        }
+                    },
+                    y: {min: 5, max: 40, nice: true}
+                },
+                plugins: [
+                    Taucharts.api.plugins.get('tooltip')()
+                ]
+            }).renderTo('#tempChart');
+            new Taucharts.Chart({
+                data: data,
+                type: 'stacked-area',
+                x: 'date',
+                y: 'humidity',
+                color: 'light',
+                dimensions: {
+                    date: {type: 'measure', scale: 'time'},
+                    humidity: {type: 'measure'}
+                },
+                guide: {
+                    color: {
+                        brewer: {
+                            false: '#594ff2',
+                            true: '#ffbc24'
+                        }
+                    },
+                    y: {min: 0, max: 100, nice: true}
+                },
+                plugins: [
+                    Taucharts.api.plugins.get('tooltip')()
+                ]
+            }).renderTo('#humiChart');
+        }
+    });
+    $.ajax({
+        dataType: 'json',
+        type: 'GET',
+        url: '/power',
+        success: function (data) {
+            new Taucharts.Chart({
+                data: data,
+                type: 'horizontal-stacked-bar',
+                y: 'status',
+                x: 'time'
+            }).renderTo('#heaterChart')
+
+        }
+    });
+
+</script>
+{% end %}

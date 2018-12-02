@@ -1,0 +1,35 @@
+{% extends base.html %}
+
+{% block main %}
+<h1 class="h2">Settings page</h1>
+<div class="row starter-template">
+    <form action="/settings" method="POST">
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="targetTemperature">Temperatura obiettivo</label>
+                <input name="targetTemperature" id="targetTemperature" type="number" class="form-control"
+                       value="{{ tgt_temp }}" min="10" max="50">
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="maxTemperature">Temperatura massima</label>
+                <input name="maxTemperature" id="maxTemperature" type="number" class="form-control"
+                       value="{{ max_temp }}" min="10" max="50">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="startHour">Ora accensione luci</label>
+                <input name="startHour" id="startHour" type="number" class="form-control"
+                       value="{{ light_start }}" min="0" max="23">
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="lightHours">Temperatura massima</label>
+                <input name="lightHours" id="lightHours" type="number" class="form-control"
+                       value="{{ light_hours }}" min="0" max="23">
+            </div>
+        </div>
+        <button class="btn btn-primary" type="submit">Salva</button>
+    </form>
+</div>
+
+{% end %}

@@ -1,0 +1,89 @@
+{% extends base.html %}
+
+{% block main %}
+<h1 class="h2">Dashboard</h1>
+<div class="card-deck">
+    <div class="card">
+        <div class="card-body">
+            <div class="text-value-lg">{{ temperature }}</div>
+            <div>Temperatura</div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <div class="text-value-lg">{{ humidity }}</div>
+            <div>Umidità</div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <div class="text-value-lg">{{ soil }}</div>
+            <div>Terreno</div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <div class="text-value-lg">{{ light }}</div>
+            <div>Luci</div>
+        </div>
+    </div>
+</div>
+<div class="card bg-dark">
+    <div class="card-body">
+        <div class="float-right">
+            <div class="btn-toolbar">
+                <div class="btn-group btn-group-sm" role="group">
+                    <button id="home" type="button" class="btn btn-light"><span data-feather="home"></span>
+                    </button>
+                    <button id="zoomin" type="button" class="btn btn-light"><span data-feather="zoom-in"></span>
+                    </button>
+                    <button id="zoomout" type="button" class="btn btn-light"><span
+                            data-feather="zoom-out"></span>
+                    </button>
+                    <button id="maximize" type="button" class="btn btn-light"><span
+                            data-feather="maximize-2"></span>
+                    </button>
+                    <button id="refresh" onclick="shot()" type="button" class="btn btn-light"><span
+                            data-feather="refresh-cw"></span></button>
+                </div>
+            </div>
+        </div>
+        <div id="zoomable" class="chart-wrapper" style="height: 800px"></div>
+    </div>
+</div>
+
+{% end %}
+
+{% block additional_script %}
+<script src="{{ static_url("js/openseadragon.min.js") }}" type="text/javascript"></script>
+<script>
+    var viewer = OpenSeadragon({
+        id: "zoomable",
+        prefixUrl: "{{ static_url("js/images/") }}",
+        tileSources: "{{ static_url("img/snapshot.dzi") }}",
+        zoomInButton: "zoomin",
+        zoomOutButton: "zoomout",
+        homeButton: "home",
+        fullPageButton: "maximize"
+    });
+
+    function shot() {
+        viewer.destroy();
+        $.ajax({
+            type: 'GET',
+            url: '/shot',
+            success: function () {
+                viewer = OpenSeadragon({
+                    id: "zoomable",
+                    prefixUrl: "{{ static_url("js/images/") }}",
+                    tileSources: "{{ static_url("img/snapshot.dzi") }}",
+                    zoomInButton: "zoomin",
+                    zoomOutButton: "zoomout",
+                    homeButton: "home",
+                    fullPageButton: "maximize"
+                });
+            }
+        });
+    }
+</script>
+{% end %}
