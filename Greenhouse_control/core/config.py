@@ -67,3 +67,7 @@ class Config:
         if tgt_temp is not None:
             self.config_data["tgt_temperature"] = int(tgt_temp)
         return res
+
+    def music_dir(self):
+        res = self.config_data["music_dir"]
+        return res

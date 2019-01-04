@@ -8,7 +8,7 @@ import tornado.process
 import os.path
 from web import *
 
-DEBUG = True
+DEBUG = False
 core = Core(DEBUG)
 
 

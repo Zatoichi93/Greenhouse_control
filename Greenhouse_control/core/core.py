@@ -6,8 +6,10 @@ from camera import Camera
 import datetime
 from config import Config
 from wrapper import Wrapper
+from music import Music
 import threading
 import os.path
+from time import sleep
 
 class Core:
     def __init__(self, debug):
@@ -19,12 +21,13 @@ class Core:
                             format='%(levelname)s: %(asctime)s %(message)s',
                             level=level)
         self.com = serial.Serial(self.cfg.serialport(), self.cfg.baudrate())
-        self.cam = Camera(self.cfg.photopath(), logging)
         self.wrap = Wrapper(self.cfg, self.com, logging)
         self.client = MongoClient("mongodb://localhost:27017/")
         self.db = self.client[self.cfg.database()]
         self.collection = self.db[self.cfg.collection()]
         logging.debug("Connected to database")
+        self.cam = Camera(self.cfg.photopath(), logging)
+        self.music = Music(self.cfg.music_dir())
         self.on = False
         self.changed = True
 
@@ -67,6 +70,9 @@ class Core:
     def __shot(self):
         photo_name = datetime.datetime.now().strftime('%y%m%d_%H')+".png"
         if not os.path.isfile(self.cfg.photopath()+photo_name):
+            self.on = True
+            self.wrap.light(self.on)
+            sleep(2)
             self.camera.take(photo_name)
         threading.Timer(20, self.__shot).start()
 
@@ -76,7 +82,8 @@ class Core:
         logging.debug("Light will be on from " + str(start_hour)
                       + " to " + str(end_hour)
                       + " now are " + str(datetime.datetime.now().hour))
-        if datetime.datetime.now().hour >= start_hour or datetime.datetime.now().hour <= end_hour:
+        now = datetime.datetime.now()
+        if now.hour >= start_hour or now.hour <= end_hour:
             self.changed = True if not self.on else False
             self.on = True
         else:
@@ -85,13 +92,17 @@ class Core:
 
         if self.changed:
             self.wrap.light(self.on)
-        threading.Timer(60, self.__light).start()
+        threading.Timer(40, self.__light).start()
+
+    def __play(self):
+        self.music.play()
 
     def start(self):
         try:
             threading.Timer(30, self.__read).start()
             threading.Timer(40, self.__shot).start()
-            threading.Timer(60, self.__light).start()
+            threading.Timer(20, self.__light).start()
+            threading.Thread(target=self.__play).start()
         except KeyboardInterrupt:
             self.cam.close()
         except Exception:

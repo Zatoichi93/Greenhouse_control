@@ -5,6 +5,14 @@ import bson.json_util
 
 class ReportHandler(tornado.web.RequestHandler):
 
+    runningSecs = 0
+    heatingSecs = 0
+    lightSecs = 0
+    avgTempsDay = []
+    avgHumDay = []
+    avgTemps = []
+    avgHumi = []
+
     def initialize(self, co):
         self.core = co
 
